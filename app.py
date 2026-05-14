@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
 
-st.title("DS Copilot AI")
+st.title("DS Copilot AI 🤖")
 
 uploaded_file = st.file_uploader("Upload CSV File", type=["csv"])
 
@@ -16,7 +16,7 @@ if uploaded_file is not None:
 
     df = pd.read_csv(uploaded_file)
 
-    # 🔥 SPEED FIX (optional but important)
+    # optional speed fix
     df = df.sample(min(1000, len(df)), random_state=42)
 
     st.subheader("Dataset Preview")
@@ -42,8 +42,7 @@ if uploaded_file is not None:
 
     st.info(
         f"This dataset contains {df.shape[0]} rows and {df.shape[1]} columns. "
-        f"{missing_text} "
-        "The dataset is ready for machine learning analysis."
+        f"{missing_text}"
     )
 
     # ------------------ TARGET ------------------
@@ -60,12 +59,9 @@ if uploaded_file is not None:
         st.write("- Linear Regression")
         st.write("- Random Forest Regressor")
 
-    st.info("AI Insight: Random Forest works well for complex datasets.")
-
     # ------------------ TRAIN MODEL ------------------
     if st.button("Train Model"):
 
-        # 🔥 spinner ADDED (IMPORTANT FIX)
         with st.spinner("Training models... Please wait ⏳"):
 
             X = df.drop(columns=[target])
@@ -83,7 +79,7 @@ if uploaded_file is not None:
             lr_predictions = lr_model.predict(X_test)
             lr_score = r2_score(y_test, lr_predictions)
 
-            # 🔥 OPTIMIZED Random Forest
+            # Random Forest
             rf_model = RandomForestRegressor(
                 n_estimators=50,
                 random_state=42
@@ -92,7 +88,7 @@ if uploaded_file is not None:
             rf_predictions = rf_model.predict(X_test)
             rf_score = r2_score(y_test, rf_predictions)
 
-        st.success("Models Trained Successfully! 🚀")
+        st.success("Models Trained Successfully 🚀")
 
         st.write("Linear Regression Score:", lr_score)
         st.write("Random Forest Score:", rf_score)
@@ -102,7 +98,7 @@ if uploaded_file is not None:
         else:
             st.info("Best Model: Random Forest")
 
-        # ------------------ MODEL COMPARISON ------------------
+        # ------------------ COMPARISON ------------------
         comparison_df = pd.DataFrame({
             "Model": ["Linear Regression", "Random Forest"],
             "Score": [lr_score, rf_score]
@@ -123,18 +119,24 @@ if uploaded_file is not None:
         # ------------------ VISUALIZATION ------------------
         st.subheader("Data Visualization")
 
-numeric_df = df.select_dtypes(include=['number'])
+        numeric_df = df.select_dtypes(include=['number'])
 
-if numeric_df.shape[1] >= 2:
+        if numeric_df.shape[1] >= 2:
 
-    fig, ax = plt.subplots()
+            fig, ax = plt.subplots()
 
-    ax.scatter(numeric_df.iloc[:, 0], numeric_df.iloc[:, 1])
+            ax.scatter(
+                numeric_df.iloc[:, 0],
+                numeric_df.iloc[:, 1]
+            )
 
-    ax.set_xlabel(numeric_df.columns[0])
-    ax.set_ylabel(numeric_df.columns[1])
+            ax.set_xlabel(numeric_df.columns[0])
+            ax.set_ylabel(numeric_df.columns[1])
 
-    st.pyplot(fig)
+            st.pyplot(fig)
+
+        else:
+            st.warning("Not enough numeric columns for scatter plot")
 
 else:
-    st.warning("Not enough numeric columns for scatter plot")
+    st.info("👆 Please upload a CSV file to start")
